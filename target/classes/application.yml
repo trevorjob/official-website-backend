@@ -22,3 +22,16 @@ admin:
   default:
     email: admin@msc.com
     password: Admin2025@
+
+# CORS Configuration
+cors:
+  allowed-origins:
+    - http://localhost:3000
+    - http://localhost:3001
+    - http://localhost:4200
+    - http://localhost:5173
+    - http://localhost:8080
+    # Add your production frontend URLs here
+  allowed-origin-patterns:
+    - https://*.vercel.app # Vercel deployments
+    - https://*.netlify.app # Netlify deployments
