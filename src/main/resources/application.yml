@@ -1,9 +1,9 @@
 ##spring.application.name=contact-form
 spring:
   datasource:
-    url: ${DATABASE_URL:jdbc:mysql://mysql:3306/${MYSQL_DATABASE:contactdb}}
-    username: ${DATABASE_USERNAME:${MYSQL_USER:root}}
-    password: ${DATABASE_PASSWORD:${MYSQL_PASSWORD:password}}
+    url: ${DATABASE_URL:jdbc:mysql://83.101.50.122:3306/msc-official?characterEncoding=utf-8&serverTimezone=UTC%2B1&allowMultiQueries=true&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false}
+    username: ${DATABASE_USERNAME:${MYSQL_USER:msc-official}}
+    password: ${DATABASE_PASSWORD:${MYSQL_PASSWORD:d348hDGe5@#23Fa1}}
     driver-class-name: ${DATABASE_DRIVER:com.mysql.cj.jdbc.Driver}
   jpa:
     hibernate:
@@ -12,7 +12,7 @@ spring:
     database-platform: ${DATABASE_DIALECT:org.hibernate.dialect.MySQLDialect}
 
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:d/9veM93K4IC978CQS+wIpbHZC3EX3a6QxtrACpWHW6ihmFCs9RMg7CBkPZy18nhvu/BkDxoRj9VdOMDyPgWBA==}
   expiration: 86400000
 
 server:
