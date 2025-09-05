@@ -2,6 +2,7 @@ package com.msc.contact.form.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -20,12 +21,8 @@ public class Waitlist {
     @Column(length = 100, nullable = false, unique = true)
     private String email;
 
-
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
 }

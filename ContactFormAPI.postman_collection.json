@@ -1,0 +1,747 @@
+{
+  "info": {
+    "_postman_id": "contact-form-api-v1",
+    "name": "Contact Form API - Frontend Developer Guide",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "# Contact Form Backend API\n\n## Overview\nThis API provides endpoints for managing contact forms, waitlists, and admin operations.\n\n## Base URL\n- **Local Development**: http://localhost:8081\n- **Production**: [Your Render URL]\n\n## Authentication\nAdmin endpoints require JWT token authentication. Use the login endpoint first to get a token.\n\n## Common Response Format\n```json\n{\n  \"message\": \"Success message\",\n  \"success\": true,\n  \"timestamp\": \"2025-08-31T00:00:00Z\"\n}\n```\n\n## Error Handling\n- **400**: Bad Request (validation errors)\n- **401**: Unauthorized (missing/invalid token)\n- **404**: Not Found\n- **500**: Internal Server Error"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{authToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          "// Auto-set auth token for admin endpoints",
+          "if (pm.request.url.toString().includes('/admin/') && !pm.request.url.toString().includes('/login')) {",
+          "    const token = pm.environment.get('authToken') || pm.globals.get('authToken');",
+          "    if (token) {",
+          "        pm.request.headers.add({",
+          "            key: 'Authorization',",
+          "            value: 'Bearer ' + token",
+          "        });",
+          "    }",
+          "}"
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Save token to environment/global variable",
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.token) {",
+                  "        pm.environment.set('authToken', response.token);",
+                  "        pm.globals.set('authToken', response.token);",
+                  "        console.log('✅ Token saved successfully');",
+                  "    }",
+                  "} else {",
+                  "    console.log('❌ Login failed');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@msc.com\",\n  \"password\": \"Admin2025@\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "login"]
+            },
+            "description": "### Admin Login\n\n**Purpose**: Authenticate admin user and receive JWT token\n\n**Request Body**:\n```json\n{\n  \"email\": \"admin@msc.com\",\n  \"password\": \"Admin2025@\"\n}\n```\n\n**Success Response (200)**:\n```json\n{\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"message\": \"Login successful\",\n  \"success\": true\n}\n```\n\n**Error Response (401)**:\n```json\n{\n  \"message\": \"Invalid credentials\",\n  \"success\": false\n}\n```"
+          },
+          "response": [
+            {
+              "name": "Success Login",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"admin@msc.com\",\n  \"password\": \"Admin2025@\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/login",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "admin", "login"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBtc2MuY29tIiwiaWF0IjoxNzI1MDU2NDAwLCJleHAiOjE3MjUxNDI4MDB9.example_token_signature\",\n  \"message\": \"Login successful\",\n  \"success\": true\n}"
+            },
+            {
+              "name": "Invalid Credentials",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"admin@msc.com\",\n  \"password\": \"wrongpassword\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/login",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "admin", "login"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Invalid credentials\",\n  \"success\": false,\n  \"timestamp\": \"2025-08-31T10:30:00Z\"\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Authentication endpoints for admin access"
+    },
+    {
+      "name": "📝 Contact Form",
+      "item": [
+        {
+          "name": "Submit Contact Form",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phoneNumber\": \"+1234567890\",\n  \"organisation\": \"Tech Corp\",\n  \"subject\": \"Business Inquiry\",\n  \"message\": \"Hello, I would like to discuss potential collaboration opportunities. Please contact me at your earliest convenience.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/contact",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "contact"]
+            },
+            "description": "### Submit Contact Form\n\n**Purpose**: Submit a new contact form from website visitors\n\n**Required Fields**: fullName, email, subject, message\n**Optional Fields**: phoneNumber, organisation\n\n**Field Validation**:\n- fullName: max 100 characters\n- email: valid email format, max 100 characters\n- phoneNumber: max 20 characters\n- organisation: max 100 characters\n- subject: max 200 characters\n- message: max 2000 characters\n\n**Success Response (200)**:\n```json\n{\n  \"message\": \"Contact form submitted successfully\",\n  \"success\": true,\n  \"timestamp\": \"2025-08-31T10:30:00Z\"\n}\n```"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phoneNumber\": \"+1234567890\",\n  \"organisation\": \"Tech Corp\",\n  \"subject\": \"Business Inquiry\",\n  \"message\": \"Hello, I would like to discuss potential collaboration opportunities.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/contact",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "contact"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Contact form submitted successfully\",\n  \"success\": true,\n  \"timestamp\": \"2025-08-31T10:30:00Z\"\n}"
+            },
+            {
+              "name": "Validation Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"\",\n  \"email\": \"invalid-email\",\n  \"subject\": \"\",\n  \"message\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/contact",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "contact"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Validation failed\",\n  \"success\": false,\n  \"errors\": {\n    \"fullName\": \"Full name is required\",\n    \"email\": \"Please provide a valid email address\",\n    \"subject\": \"Subject is required\",\n    \"message\": \"Message is required\"\n  },\n  \"timestamp\": \"2025-08-31T10:30:00Z\"\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Contact form submission endpoints"
+    },
+    {
+      "name": "📧 Waitlist",
+      "item": [
+        {
+          "name": "Join Waitlist",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/waitlist",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "waitlist"]
+            },
+            "description": "### Join Waitlist\n\n**Purpose**: Add user email to waitlist\n\n**Required Fields**: email\n\n**Field Validation**:\n- email: valid email format, max 100 characters\n\n**Success Response (200)**:\n```json\n{\n  \"message\": \"Successfully joined waitlist\",\n  \"success\": true,\n  \"timestamp\": \"2025-08-31T10:30:00Z\"\n}\n```\n\n**Duplicate Email Response (400)**:\n```json\n{\n  \"message\": \"Email already exists in waitlist\",\n  \"success\": false\n}\n```"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"user@example.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/waitlist",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "waitlist"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Successfully joined waitlist\",\n  \"success\": true,\n  \"timestamp\": \"2025-08-31T10:30:00Z\"\n}"
+            },
+            {
+              "name": "Duplicate Email",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"existing@example.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/waitlist",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "waitlist"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Email already exists in waitlist\",\n  \"success\": false,\n  \"timestamp\": \"2025-08-31T10:30:00Z\"\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Waitlist management endpoints"
+    },
+    {
+      "name": "👨‍💼 Admin - Contact Management",
+      "item": [
+        {
+          "name": "Get All Contacts (Paginated)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/contacts?page=0&limit=10&sortBy=createdAt&sortOrder=desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "contacts"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0",
+                  "description": "Page number (0-based)"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Items per page"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt",
+                  "description": "Sort field (createdAt, fullName, email, etc.)"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc",
+                  "description": "Sort direction (asc, desc)"
+                }
+              ]
+            },
+            "description": "### Get All Contacts (Paginated)\n\n**Purpose**: Retrieve paginated list of contact form submissions\n\n**Query Parameters**:\n- page: Page number (default: 0)\n- limit: Items per page (default: 10)\n- sortBy: Sort field (default: createdAt)\n- sortOrder: asc or desc (default: desc)\n\n**Response**:\n```json\n{\n  \"content\": [\n    {\n      \"id\": 1,\n      \"fullName\": \"John Doe\",\n      \"email\": \"john@example.com\",\n      \"phoneNumber\": \"+1234567890\",\n      \"organisation\": \"Tech Corp\",\n      \"subject\": \"Business Inquiry\",\n      \"message\": \"Hello...\",\n      \"isRead\": false,\n      \"createdAt\": \"2025-08-31T10:30:00Z\"\n    }\n  ],\n  \"totalElements\": 25,\n  \"totalPages\": 3,\n  \"size\": 10,\n  \"number\": 0\n}\n```"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/contacts?page=0&limit=10&sortBy=createdAt&sortOrder=desc",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "admin", "contacts"],
+                  "query": [
+                    { "key": "page", "value": "0" },
+                    { "key": "limit", "value": "10" },
+                    { "key": "sortBy", "value": "createdAt" },
+                    { "key": "sortOrder", "value": "desc" }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": 1,\n      \"fullName\": \"John Doe\",\n      \"email\": \"john.doe@example.com\",\n      \"phoneNumber\": \"+1234567890\",\n      \"organisation\": \"Tech Corp\",\n      \"subject\": \"Business Inquiry\",\n      \"message\": \"Hello, I would like to discuss potential collaboration opportunities. Please contact me at your earliest convenience.\",\n      \"isRead\": false,\n      \"createdAt\": \"2025-08-31T10:30:00Z\"\n    },\n    {\n      \"id\": 2,\n      \"fullName\": \"Jane Smith\",\n      \"email\": \"jane.smith@company.com\",\n      \"phoneNumber\": \"+1987654321\",\n      \"organisation\": \"Design Studio\",\n      \"subject\": \"Partnership Opportunity\",\n      \"message\": \"We are interested in partnering with your company for our upcoming project.\",\n      \"isRead\": true,\n      \"createdAt\": \"2025-08-31T09:15:00Z\"\n    }\n  ],\n  \"totalElements\": 25,\n  \"totalPages\": 3,\n  \"size\": 10,\n  \"number\": 0,\n  \"first\": true,\n  \"last\": false,\n  \"empty\": false\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Contact By ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/contact/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "contact", "1"]
+            },
+            "description": "### Get Contact By ID\n\n**Purpose**: Retrieve specific contact form submission\n\n**Path Parameters**:\n- id: Contact ID\n\n**Success Response (200)**:\n```json\n{\n  \"id\": 1,\n  \"fullName\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"phoneNumber\": \"+1234567890\",\n  \"organisation\": \"Tech Corp\",\n  \"subject\": \"Business Inquiry\",\n  \"message\": \"Hello...\",\n  \"isRead\": false,\n  \"createdAt\": \"2025-08-31T10:30:00Z\"\n}\n```"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/contact/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "admin", "contact", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"id\": 1,\n  \"fullName\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phoneNumber\": \"+1234567890\",\n  \"organisation\": \"Tech Corp\",\n  \"subject\": \"Business Inquiry\",\n  \"message\": \"Hello, I would like to discuss potential collaboration opportunities. Please contact me at your earliest convenience.\",\n  \"isRead\": false,\n  \"createdAt\": \"2025-08-31T10:30:00Z\"\n}"
+            },
+            {
+              "name": "Contact Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/contact/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "admin", "contact", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Contact not found\",\n  \"success\": false,\n  \"timestamp\": \"2025-08-31T10:30:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Mark Contact As Read",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/contacts/1/read",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "contacts", "1", "read"]
+            },
+            "description": "### Mark Contact As Read\\n\\n**Purpose**: Mark a contact form submission as read\\n\\n**Path Parameters**:\\n- id: Contact ID\\n\\n**Success Response (204)**: No content"
+          }
+        },
+        {
+          "name": "Delete Contact",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/contacts/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "contacts", "1"]
+            },
+            "description": "### Delete Contact\\n\\n**Purpose**: Delete a contact form submission\\n\\n**Path Parameters**:\\n- id: Contact ID\\n\\n**Success Response (204)**: No content"
+          }
+        }
+      ],
+      "description": "Admin endpoints for managing contact form submissions"
+    },
+    {
+      "name": "👨‍💼 Admin - Waitlist Management",
+      "item": [
+        {
+          "name": "Get All Waitlists (Paginated)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/waitlists?page=0&limit=10&sortBy=createdAt&sortOrder=desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "waitlists"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0",
+                  "description": "Page number (0-based)"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Items per page"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt",
+                  "description": "Sort field"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc",
+                  "description": "Sort direction (asc, desc)"
+                }
+              ]
+            },
+            "description": "### Get All Waitlists (Paginated)\\n\\n**Purpose**: Retrieve paginated list of waitlist entries\\n\\n**Query Parameters**: Same as contacts endpoint\\n\\n**Response**:\\n```json\\n{\\n  \\\"content\\\": [\\n    {\\n      \\\"id\\\": 1,\\n      \\\"email\\\": \\\"user@example.com\\\",\\n      \\\"createdAt\\\": \\\"2025-08-31T10:30:00Z\\\"\\n    }\\n  ],\\n  \\\"totalElements\\\": 50,\\n  \\\"totalPages\\\": 5,\\n  \\\"size\\\": 10,\\n  \\\"number\\\": 0\\n}\\n```"
+          }
+        },
+        {
+          "name": "Delete Waitlist Entry",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/waitlist/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "waitlist", "1"]
+            },
+            "description": "### Delete Waitlist Entry\\n\\n**Purpose**: Remove an email from the waitlist\\n\\n**Path Parameters**:\\n- id: Waitlist entry ID\\n\\n**Success Response (204)**: No content"
+          }
+        }
+      ],
+      "description": "Admin endpoints for managing waitlist entries"
+    },
+    {
+      "name": "📊 Admin - Analytics",
+      "item": [
+        {
+          "name": "Get Admin Dashboard Stats",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "stats"]
+            },
+            "description": "### Get Admin Dashboard Stats\n\n**Purpose**: Retrieve statistics for admin dashboard\n\n**Success Response (200)**:\n```json\n{\n  \"totalContacts\": 125,\n  \"unreadContacts\": 15,\n  \"totalWaitlistEntries\": 250,\n  \"todayContacts\": 8,\n  \"todayWaitlistEntries\": 12,\n  \"weeklyContactsGrowth\": 15.5,\n  \"weeklyWaitlistGrowth\": 22.3\n}\n```"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{authToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/stats",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "admin", "stats"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"totalContacts\": 125,\n  \"unreadContacts\": 15,\n  \"totalWaitlistEntries\": 250,\n  \"todayContacts\": 8,\n  \"todayWaitlistEntries\": 12,\n  \"weeklyContactsGrowth\": 15.5,\n  \"weeklyWaitlistGrowth\": 22.3,\n  \"monthlyContactsGrowth\": 8.2,\n  \"monthlyWaitlistGrowth\": 18.7,\n  \"lastUpdated\": \"2025-08-31T10:30:00Z\"\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Admin analytics and statistics endpoints"
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8081",
+      "description": "Base URL for the API (change for production)"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "description": "JWT token for admin authentication (auto-populated after login)"
+    }
+  ]
+}

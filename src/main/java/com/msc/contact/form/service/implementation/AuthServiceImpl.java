@@ -2,7 +2,6 @@ package com.msc.contact.form.service.implementation;
 
 import com.msc.contact.form.dto.LoginRequest;
 import com.msc.contact.form.dto.LoginResponse;
-import com.msc.contact.form.dto.ResponseDto;
 import com.msc.contact.form.security.JwtUtil;
 import com.msc.contact.form.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,7 +25,9 @@ public class AuthServiceImpl implements AuthService {
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
             );
 
-            String token = jwtUtil.generateToken(authentication.getName());
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String token = jwtUtil.generateToken(userDetails.getUsername());
+
 
             LoginResponse response = new LoginResponse();
             response.setToken(token);
@@ -38,7 +40,5 @@ public class AuthServiceImpl implements AuthService {
             return response;
         }
     }
-
-
 
 }

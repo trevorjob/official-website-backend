@@ -2,6 +2,7 @@ package com.msc.contact.form.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -35,14 +36,12 @@ public class Contact {
     @Column(columnDefinition = "text", length = 2000, nullable = false)
     private String message;
 
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     @Column(name = "is_read")
     private boolean isRead = false;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
+
 }

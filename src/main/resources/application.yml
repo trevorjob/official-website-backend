@@ -1,29 +1,82 @@
-##spring.application.name=contact-form
+server:
+  port: 8181
+
 spring:
+  application:
+    name: contact-form
+  profiles:
+    active: dev
+
+jwt:
+  secret: ${JWT_SECRET:d/9veM93K4IC978CQS+wIpbHZC3EX3a6QxtrACpWHW6ihmFCs9RMg7CBkPZy18nhvu/BkDxoRj9VdOMDyPgWBA==}
+  expiration: 86400000
+
+admin:
+  default:
+    email: admin@msc.com
+    password: Admin2025@
+
+# CORS Configuration
+cors:
+  allowed-origins:
+    - http://localhost:3000
+    - http://localhost:3001
+    - http://localhost:4200
+    - http://localhost:5173
+    - http://localhost:8080
+    # Add your production frontend URLs here
+  allowed-origin-patterns:
+    - https://*.vercel.app # Vercel deployments
+    - https://*.netlify.app # Netlify deployments
+
+
+---
+# dev environment configuration
+spring:
+  config:
+    activate:
+      on-profile: dev
   datasource:
-    url: jdbc:h2:mem:contactdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: password
-
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-
+    url: ${DATABASE_URL:jdbc:mysql://83.101.50.122:3306/msc-official?characterEncoding=utf-8&serverTimezone=UTC%2B1&allowMultiQueries=true&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false}
+    username: ${DATABASE_USERNAME:${MYSQL_USER:msc-official}}
+    password: ${DATABASE_PASSWORD:${MYSQL_PASSWORD:d348hDGe5@#23Fa1}}
+    driver-class-name: ${DATABASE_DRIVER:com.mysql.cj.jdbc.Driver}
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: ${DATABASE_DIALECT:org.hibernate.dialect.MySQLDialect}
 
-jwt:
-   secret: "d/9veM93K4IC978CQS+wIpbHZC3EX3a6QxtrACpWHW6ihmFCs9RMg7CBkPZy18nh
-  vu/BkDxoRj9VdOMDyPgWBA=="
-   expiration: 86400000
+---
+# test environment configuration
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: ${DATABASE_URL:jdbc:mysql://83.101.50.122:3306/msc-official?characterEncoding=utf-8&serverTimezone=UTC%2B1&allowMultiQueries=true&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false}
+    username: ${DATABASE_USERNAME:${MYSQL_USER:msc-official}}
+    password: ${DATABASE_PASSWORD:${MYSQL_PASSWORD:d348hDGe5@#23Fa1}}
+    driver-class-name: ${DATABASE_DRIVER:com.mysql.cj.jdbc.Driver}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: ${DATABASE_DIALECT:org.hibernate.dialect.MySQLDialect}
 
-
-
+---
+# pro environment configuration
+spring:
+  config:
+    activate:
+      on-profile: pro
+  datasource:
+    url: ${DATABASE_URL:jdbc:mysql://83.101.50.12:3306/msc-official?characterEncoding=utf-8&serverTimezone=UTC%2B1&allowMultiQueries=true&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false}
+    username: ${DATABASE_USERNAME:${MYSQL_USER:msc-official}}
+    password: ${DATABASE_PASSWORD:${MYSQL_PASSWORD:d348hDGe5@#23Fa1}}
+    driver-class-name: ${DATABASE_DRIVER:com.mysql.cj.jdbc.Driver}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: ${DATABASE_DIALECT:org.hibernate.dialect.MySQLDialect}
