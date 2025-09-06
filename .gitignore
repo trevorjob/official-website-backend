@@ -1,9 +1,10 @@
 # Env files
 *.env
 target/
+.idea
 # Compiled class file
 *.class
-
+mvnw*
 # Log file
 *.log
 

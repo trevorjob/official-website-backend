@@ -16,17 +16,17 @@ public class AdminStatServiceImpl implements AdminStatService {
     private final ContactRepository contactRepository;
     private final WaitlistRepository waitlistRepository;
 
-
     @Override
     public AdminStatsResponse getAdminStats() {
         LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
 
-        long totalContacts = contactRepository.count();
+        // Use soft delete aware methods - count only active (non-deleted) records
+        long totalContacts = contactRepository.findAllActive().size();
         long unreadContacts = contactRepository.countByIsReadFalse();
         long readContacts = contactRepository.countByIsReadTrue();
         long recentContacts = contactRepository.countByCreatedAtGreaterThanEqual(sevenDaysAgo);
 
-        long totalWaitlist = waitlistRepository.count();
+        long totalWaitlist = waitlistRepository.findAllActive().size();
         long recentWaitlist = waitlistRepository.countByCreatedAtGreaterThanEqual(sevenDaysAgo);
 
         return AdminStatsResponse.builder()

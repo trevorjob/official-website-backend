@@ -2,10 +2,12 @@ package com.msc.contact.form.controller;
 
 import com.msc.contact.form.dto.AdminStatsResponse;
 import com.msc.contact.form.dto.ContactResponseDto;
+import com.msc.contact.form.dto.ResponseDto;
 import com.msc.contact.form.dto.WaitlistResponseDto;
 import com.msc.contact.form.service.AdminStatService;
 import com.msc.contact.form.service.ContactService;
 import com.msc.contact.form.service.WaitlistService;
+import com.msc.contact.form.service.RestoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +22,7 @@ public class AdminController {
     private final ContactService contactService;
     private final WaitlistService waitlistService;
     private final AdminStatService adminStatService;
+    private final RestoreService restoreService;
 
     @GetMapping("/contact/{id}")
     public ResponseEntity<ContactResponseDto> getContactById(@PathVariable Long id) {
@@ -69,6 +72,36 @@ public class AdminController {
     @GetMapping("/stats")
     public ResponseEntity<AdminStatsResponse> getAdminStats() {
         return ResponseEntity.ok(adminStatService.getAdminStats());
+    }
+
+    // Restore endpoints for soft deleted records
+    @PostMapping("/contacts/{id}/restore")
+    public ResponseEntity<ResponseDto> restoreContact(@PathVariable Long id) {
+        return ResponseEntity.ok(restoreService.restoreContact(id));
+    }
+
+    @PostMapping("/waitlist/{id}/restore")
+    public ResponseEntity<ResponseDto> restoreWaitlist(@PathVariable Long id) {
+        return ResponseEntity.ok(restoreService.restoreWaitlist(id));
+    }
+
+    // View deleted records
+    @GetMapping("/contacts/deleted")
+    public ResponseEntity<Page<ContactResponseDto>> getDeletedContacts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int limit) {
+        PageRequest pageRequest = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "modifiedTime"));
+        Page<ContactResponseDto> deletedContacts = contactService.getDeletedContacts(pageRequest);
+        return ResponseEntity.ok(deletedContacts);
+    }
+
+    @GetMapping("/waitlists/deleted")
+    public ResponseEntity<Page<WaitlistResponseDto>> getDeletedWaitlists(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int limit) {
+        PageRequest pageRequest = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "modifiedTime"));
+        Page<WaitlistResponseDto> deletedWaitlists = waitlistService.getDeletedWaitlists(pageRequest);
+        return ResponseEntity.ok(deletedWaitlists);
     }
 
 }

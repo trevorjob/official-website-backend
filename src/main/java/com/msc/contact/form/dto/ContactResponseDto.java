@@ -1,5 +1,6 @@
 package com.msc.contact.form.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,5 +17,7 @@ public class ContactResponseDto {
     private String subject;
     private String message;
     private boolean isRead;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 }

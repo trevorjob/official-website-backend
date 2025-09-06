@@ -10,6 +10,11 @@ spring:
       ddl-auto: update
     show-sql: true
     database-platform: ${DATABASE_DIALECT:org.hibernate.dialect.MySQLDialect}
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: UTC
 
 jwt:
   secret: ${JWT_SECRET}
@@ -20,8 +25,8 @@ server:
 
 admin:
   default:
-    email: admin@msc.com
-    password: Admin2025@
+    email: ${ADMIN_EMAIL}
+    password: ${ADMIN_PASSWORD}
 
 # CORS Configuration
 cors:

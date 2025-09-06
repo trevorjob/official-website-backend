@@ -10,6 +10,7 @@ public interface ContactService {
     ResponseDto submitContact(ContactRequest dto);
     ContactResponseDto getContactById(Long id);
     Page<ContactResponseDto> getAllContacts(PageRequest pageRequest);
+    Page<ContactResponseDto> getDeletedContacts(PageRequest pageRequest);
     void markAsRead(Long id);
     void deleteContact(Long id);
 }

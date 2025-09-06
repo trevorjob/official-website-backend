@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface WaitlistService {
     public ResponseDto joinWaitlist(WaitlistRequest dto);
-    Page<WaitlistResponseDto>getWaitlists(Pageable pageable);
+    Page<WaitlistResponseDto> getWaitlists(Pageable pageable);
+    Page<WaitlistResponseDto> getDeletedWaitlists(Pageable pageable);
     void deleteWaitlist(Long id);
 }
