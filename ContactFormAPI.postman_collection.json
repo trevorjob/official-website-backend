@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "contact-form-api-v1",
+    "_postman_id": "official-api-v1",
     "name": "Contact Form API - Frontend Developer Guide",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "description": "# Contact Form Backend API\n\n## Overview\nThis API provides endpoints for managing contact forms, waitlists, and admin operations.\n\n## Base URL\n- **Local Development**: http://localhost:8081\n- **Production**: [Your Render URL]\n\n## Authentication\nAdmin endpoints require JWT token authentication. Use the login endpoint first to get a token.\n\n## Common Response Format\n```json\n{\n  \"message\": \"Success message\",\n  \"success\": true,\n  \"timestamp\": \"2025-08-31T00:00:00Z\"\n}\n```\n\n## Error Handling\n- **400**: Bad Request (validation errors)\n- **401**: Unauthorized (missing/invalid token)\n- **404**: Not Found\n- **500**: Internal Server Error"

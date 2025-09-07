@@ -28,10 +28,10 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Value("${cors.allowed-origins:http://localhost:3000,http://localhost:3001,http://localhost:4200,http://localhost:5173}")
+    @Value("${cors.allowed-origins}")
     private String[] allowedOrigins;
 
-    @Value("${cors.allowed-origin-patterns:https://*.vercel.app,https://*.netlify.app}")
+    @Value("${cors.allowed-origin-patterns}")
     private String[] allowedOriginPatterns;
 
     @Bean

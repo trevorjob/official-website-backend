@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.msc</groupId>
-	<artifactId>contact-form</artifactId>
+	<artifactId>official</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>contact-form</name>
+	<name>official</name>
 	<description>contact form and waitlist</description>
 	<url/>
 	<licenses>
