@@ -26,18 +26,12 @@ admin:
 # CORS Configuration
 cors:
   allowed-origins: |
-    http://localhost:3000,
-    http://localhost:3001,
-    http://localhost:3002,
-    http://localhost:3003,
-    http://localhost:4200,
-    http://localhost:5173,
-    http://localhost:8080,
     https://www.msc.store
-    # Add your production frontend URLs here
   allowed-origin-patterns: |
-    https://*.vercel.app, # Vercel deployments
-    https://*.netlify.app # Netlify deployments
+    https://*.vercel.app,
+    https://*.netlify.app,
+    http://localhost:*,
+    http://127.0.0.1:*
 
 
 ---
@@ -81,9 +75,9 @@ spring:
     activate:
       on-profile: pro
   datasource:
-    url: ${DATABASE_URL:jdbc:mysql://83.101.50.12:3306/msc-official?characterEncoding=utf-8&serverTimezone=UTC%2B1&allowMultiQueries=true&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false}
-    username: ${DATABASE_USERNAME:${MYSQL_USER:msc-official}}
-    password: ${DATABASE_PASSWORD:${MYSQL_PASSWORD:d348hDGe5@#23Fa1}}
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME:${MYSQL_USER}}
+    password: ${DATABASE_PASSWORD:${MYSQL_PASSWORD}}
     driver-class-name: ${DATABASE_DRIVER:com.mysql.cj.jdbc.Driver}
   jpa:
     hibernate:
