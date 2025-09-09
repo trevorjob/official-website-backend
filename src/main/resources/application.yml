@@ -25,16 +25,16 @@ admin:
 
 # CORS Configuration
 cors:
-  allowed-origins:
-    - http://localhost:3000
-    - http://localhost:3001
-    - http://localhost:3002
-    - https://dev-offsite.msc.store
-    - https://test-offsite.msc.store
-    - https://offsite.msc.store
-  allowed-origin-patterns:
-    - https://*.vercel.app
-    - https://*.netlify.app
+  allowed-origins: |
+    http://dev-offsite.msc.store
+    http://test-offsite.msc.store
+    http://offsite.msc.store
+  allowed-origin-patterns: |
+    https://*.vercel.app,
+    https://*.netlify.app,
+    http://localhost:*,
+    http://127.0.0.1:*
+
 
 
 ---
@@ -47,12 +47,12 @@ spring:
     url: ${DATABASE_URL}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
-    driver-class-name: ${DATABASE_DRIVER}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: ${JPA_DDL_AUTO}
-    show-sql: ${JPA_SHOW_SQL}
-    database-platform: ${DATABASE_DIALECT}
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect
 
 ---
 # test environment configuration
@@ -64,12 +64,12 @@ spring:
     url: ${DATABASE_URL}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
-    driver-class-name: ${DATABASE_DRIVER}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: ${JPA_DDL_AUTO}
-    show-sql: ${JPA_SHOW_SQL}
-    database-platform: ${DATABASE_DIALECT}
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect
 
 ---
 # pro environment configuration
@@ -81,9 +81,9 @@ spring:
     url: ${DATABASE_URL}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
-    driver-class-name: ${DATABASE_DRIVER}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: ${JPA_DDL_AUTO}
-    show-sql: ${JPA_SHOW_SQL}
-    database-platform: ${DATABASE_DIALECT}
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect
