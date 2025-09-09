@@ -25,19 +25,16 @@ admin:
 
 # CORS Configuration
 cors:
-  allowed-origins: |
-    http://localhost:3000,
-    http://localhost:3001,
-    http://localhost:3002,
-    http://localhost:3003,
-    http://localhost:4200,
-    http://localhost:5173,
-    http://localhost:8080,
-    https://www.msc.store
-    # Add your production frontend URLs here
-  allowed-origin-patterns: |
-    https://*.vercel.app, # Vercel deployments
-    https://*.netlify.app # Netlify deployments
+  allowed-origins:
+    - http://localhost:3000
+    - http://localhost:3001
+    - http://localhost:3002
+    - https://dev-offsite.msc.store
+    - https://test-offsite.msc.store
+    - https://offsite.msc.store
+  allowed-origin-patterns:
+    - https://*.vercel.app
+    - https://*.netlify.app
 
 
 ---
@@ -47,15 +44,15 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    url: ${DATABASE_URL:jdbc:mysql://83.101.50.122:3306/msc-official?characterEncoding=utf-8&serverTimezone=UTC%2B1&allowMultiQueries=true&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false}
-    username: ${DATABASE_USERNAME:${MYSQL_USER:msc-official}}
-    password: ${DATABASE_PASSWORD:${MYSQL_PASSWORD:d348hDGe5@#23Fa1}}
-    driver-class-name: ${DATABASE_DRIVER:com.mysql.cj.jdbc.Driver}
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: ${DATABASE_DRIVER}
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
-    database-platform: ${DATABASE_DIALECT:org.hibernate.dialect.MySQLDialect}
+      ddl-auto: ${JPA_DDL_AUTO}
+    show-sql: ${JPA_SHOW_SQL}
+    database-platform: ${DATABASE_DIALECT}
 
 ---
 # test environment configuration
@@ -64,15 +61,15 @@ spring:
     activate:
       on-profile: test
   datasource:
-    url: ${DATABASE_URL:jdbc:mysql://83.101.50.122:3306/msc-official?characterEncoding=utf-8&serverTimezone=UTC%2B1&allowMultiQueries=true&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false}
-    username: ${DATABASE_USERNAME:${MYSQL_USER:msc-official}}
-    password: ${DATABASE_PASSWORD:${MYSQL_PASSWORD:d348hDGe5@#23Fa1}}
-    driver-class-name: ${DATABASE_DRIVER:com.mysql.cj.jdbc.Driver}
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: ${DATABASE_DRIVER}
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
-    database-platform: ${DATABASE_DIALECT:org.hibernate.dialect.MySQLDialect}
+      ddl-auto: ${JPA_DDL_AUTO}
+    show-sql: ${JPA_SHOW_SQL}
+    database-platform: ${DATABASE_DIALECT}
 
 ---
 # pro environment configuration
@@ -81,12 +78,12 @@ spring:
     activate:
       on-profile: pro
   datasource:
-    url: ${DATABASE_URL:jdbc:mysql://83.101.50.12:3306/msc-official?characterEncoding=utf-8&serverTimezone=UTC%2B1&allowMultiQueries=true&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false}
-    username: ${DATABASE_USERNAME:${MYSQL_USER:msc-official}}
-    password: ${DATABASE_PASSWORD:${MYSQL_PASSWORD:d348hDGe5@#23Fa1}}
-    driver-class-name: ${DATABASE_DRIVER:com.mysql.cj.jdbc.Driver}
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: ${DATABASE_DRIVER}
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
-    database-platform: ${DATABASE_DIALECT:org.hibernate.dialect.MySQLDialect}
+      ddl-auto: ${JPA_DDL_AUTO}
+    show-sql: ${JPA_SHOW_SQL}
+    database-platform: ${DATABASE_DIALECT}
